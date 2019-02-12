@@ -1,7 +1,7 @@
 {
-  "name": "react-simple-boilerplate",
+  "name": "chatty-app",
   "version": "1.0.0",
-  "description": "Simple and lightweight Boilerplate for ReactJS projects",
+  "description": "Simple Chat App with ReactJS",
   "scripts": {
     "lint": "eslint --ext .jsx,.js src",
     "start": "node server.js"
@@ -19,7 +19,7 @@
     "edit",
     "webpack"
   ],
-  "author": "Noah-Jerome Lotzer <n.lotzer@neusta.de>",
+  "author": "Lucas Cruz",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/noahlotzer/react-simple-boilerplate/issues"
@@ -42,7 +42,7 @@
     "sockjs-client": "^1.1.2",
     "style-loader": "0.13.1",
     "webpack": "2.2.1",
-    "webpack-dev-server": "2.3.0"
+    "webpack-dev-server": "^3.0.0"
   },
   "dependencies": {
     "react": "15.4.2",
