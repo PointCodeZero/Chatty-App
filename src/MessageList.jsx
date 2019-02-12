@@ -4,12 +4,10 @@ import Message from './Message.jsx';
 class MessageList extends Component {
   render() {
     return (
-    /* if () {} */
-
-    /* else */
-        <main className="messages">
-          <Message />
-        </main>
+      <main className="messages">{this.props.messages.map((message) => {
+        return <Message message={message}/>
+        })}
+      </main>
     );
   }
 
