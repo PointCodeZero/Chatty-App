@@ -30,15 +30,14 @@ class App extends Component {
       const allMessages = this.state.messages;
       allMessages.push({ id: id, username: this.state.currentUser, content: event.target.value });
       this.setState({ messages: allMessages });
-      console.log(this);
+      this.socket.send(JSON.stringify({ username: this.state.currentUser, content: event.target.value }));
+      event.target.value = '';
     }
   }
 
   currentUserUpdate(event) {
     const newUser = event.target.value;
-    console.log(newUser);
-    console.log(newUser.length);
-    newUser.lenght === 0 ? this.setState({ currentUser: 'Anonymous' }) : this.setState({ currentUser: newUser });
+    newUser.length === 0 ? this.setState({ currentUser: 'Anonymous' }) : this.setState({ currentUser: newUser });
   }
 
   componentDidMount() {
@@ -47,11 +46,17 @@ class App extends Component {
       console.log("Simulating incoming message");
       // Add a new message to the list of messages in the data store
       const newMessage = {id: 3, username: "Andreia", content: "Mike is the best!"};
-      const messages = this.state.messages.concat(newMessage)
+      const messages = this.state.messages.concat(newMessage);
       // Update the state of the app component.
       // Calling setState will trigger a call to render() in App and all child components.
-      this.setState({messages: messages})
+      this.setState({messages: messages});
     }, 3000);
+    //Websockets connection
+    this.socket = new WebSocket('ws://localhost:3001');
+    this.socket.onopen = () => {
+      console.log('Connected to 3001');
+      // this.socket.send("Here's some text that the server is urgently awaiting!");
+    };
   }
 
   render() {
