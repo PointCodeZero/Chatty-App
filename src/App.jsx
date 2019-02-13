@@ -7,18 +7,7 @@ class App extends Component {
     super();
     this.state = {
       currentUser: 'Anonymous',
-      messages: [
-        {
-          id: 1,
-          username: "Bob",
-          content: "Has anyone seen my marbles?"
-        },
-        {
-          id: 2,
-          username: "Anonymous",
-          content: "No, I think you lost them. You lost your marbles Bob. You lost them for good."
-        }
-      ]
+      messages: []
     };
     this.onKeyPress = this.onKeyPress.bind(this);
     this.currentUserUpdate = this.currentUserUpdate.bind(this);
@@ -26,10 +15,6 @@ class App extends Component {
 
   onKeyPress(event) {
     if (event.key == 'Enter') {
-      const id = this.state.messages.length + 1;
-      const allMessages = this.state.messages;
-      allMessages.push({ id: id, username: this.state.currentUser, content: event.target.value });
-      this.setState({ messages: allMessages });
       this.socket.send(JSON.stringify({ username: this.state.currentUser, content: event.target.value }));
       event.target.value = '';
     }
@@ -42,21 +27,18 @@ class App extends Component {
 
   componentDidMount() {
     console.log("componentDidMount <App />");
-    setTimeout(() => {
-      console.log("Simulating incoming message");
-      // Add a new message to the list of messages in the data store
-      const newMessage = {id: 3, username: "Andreia", content: "Mike is the best!"};
-      const messages = this.state.messages.concat(newMessage);
-      // Update the state of the app component.
-      // Calling setState will trigger a call to render() in App and all child components.
-      this.setState({messages: messages});
-    }, 3000);
+
     //Websockets connection
     this.socket = new WebSocket('ws://localhost:3001');
     this.socket.onopen = () => {
       console.log('Connected to 3001');
-      // this.socket.send("Here's some text that the server is urgently awaiting!");
     };
+
+    this.socket.onmessage = (event) => {
+      const messages = this.state.messages;
+      this.setState({ messages: [...messages, JSON.parse(event.data)] }, () => {
+      });
+    }
   }
 
   render() {
