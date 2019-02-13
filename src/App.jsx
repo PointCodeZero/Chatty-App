@@ -6,7 +6,7 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      currentUser: {name: 'Anonymous'}, //if empty user will be Anonymous
+      currentUser: 'Anonymous',
       messages: [
         {
           id: 1,
@@ -21,16 +21,24 @@ class App extends Component {
       ]
     };
     this.onKeyPress = this.onKeyPress.bind(this);
+    this.currentUserUpdate = this.currentUserUpdate.bind(this);
   }
 
   onKeyPress(event) {
     if (event.key == 'Enter') {
       const id = this.state.messages.length + 1;
       const allMessages = this.state.messages;
-      allMessages.push({ id: id, username: this.state.currentUser.name, content: event.target.value });
+      allMessages.push({ id: id, username: this.state.currentUser, content: event.target.value });
       this.setState({ messages: allMessages });
       console.log(this);
     }
+  }
+
+  currentUserUpdate(event) {
+    const newUser = event.target.value;
+    console.log(newUser);
+    console.log(newUser.length);
+    newUser.lenght === 0 ? this.setState({ currentUser: 'Anonymous' }) : this.setState({ currentUser: newUser });
   }
 
   componentDidMount() {
@@ -52,8 +60,8 @@ class App extends Component {
         <nav className="navbar">
           <a href="/" className="navbar-brand">Chatty</a>
         </nav>
-        <MessageList messages={this.state.messages} currentUser={this.state.currentUser.name} />
-        <ChatBar onKeyPress={this.onKeyPress} currentUser={this.state.currentUser.name} />
+        <MessageList messages={this.state.messages} currentUser={this.state.currentUser} />
+        <ChatBar onKeyPress={this.onKeyPress} currentUser={this.state.currentUser} currentUserUpdate={this.currentUserUpdate} />
       </div>
     );
   }
