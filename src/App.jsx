@@ -25,8 +25,11 @@ class App extends Component {
 
   onKeyPress(event) {
     if (event.key == 'Enter') {
-      alert('Hello');
-      //put login here
+      const id = this.state.messages.length + 1;
+      const allMessages = this.state.messages;
+      allMessages.push({ id: id, username: this.state.currentUser.name, content: event.target.value });
+      this.setState({ messages: allMessages });
+      console.log(this);
     }
   }
 
