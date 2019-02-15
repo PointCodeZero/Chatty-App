@@ -21,6 +21,7 @@ const wss = new SocketServer({ server });
 // When a client connects they are assigned a socket, represented by
 // the ws parameter in the callback.
 
+//Send all updates to all users
 wss.broadcast = function broadcast(data) {
   wss.clients.forEach(function each(client) {
     if (client.readyState === WebSocket.OPEN) {
@@ -31,34 +32,48 @@ wss.broadcast = function broadcast(data) {
 
 wss.on('connection', ws => {
   console.log('Client connected');
-  ws.on('message', data => {
-    const message = JSON.parse(data);
-    const uniqueID = uuidv4();
-    let newObj;
-    switch (message.type) {
-        case 'postMessage':
-          newObj = {
-            type: 'incomingMessage',
-            id: uniqueID,
-            username: message.username,
-            content: message.content,
-            created_at: Date.now() 
-          };
-          break;
-        case 'postNotification':
-          newObj = {
-            type: 'incomingNotification',
-            id: uniqueID,
-            content: message.content,
-            created_at: Date.now()
-          };
-          break;
-        default:
-          throw new Error(`Unknown event type ${message.type}`);
-      }
-    wss.broadcast(JSON.stringify(newObj));
-  });
+
+  //Broadcast user count as soon as a new user is connected
+  wss.broadcast(
+    JSON.stringify({
+      type: 'usersConnected',
+      id: uuidv4(),
+      counter: wss.clients.size
+    })
+  );
+
+  //Broadcast messages and notifications
+  ws.on('message', handleMessage);
 
   // Set up a callback for when a client closes the socket. This usually means they closed their browser.
   ws.on('close', () => console.log('Client disconnected'));
 });
+
+const handleMessage = data => {
+  const message = JSON.parse(data);
+  const uniqueID = uuidv4();
+  let newObj;
+  switch (message.type) {
+    case 'postMessage':
+      newObj = {
+        type: 'incomingMessage',
+        id: uniqueID,
+        username: message.username,
+        content: message.content,
+        created_at: Date.now()
+      };
+      break;
+    case 'postNotification':
+      newObj = {
+        type: 'incomingNotification',
+        id: uniqueID,
+        content: message.content,
+        created_at: Date.now()
+      };
+      break;
+    default:
+      console.error(`Unknown event type ${message.type}`);
+      break;
+  }
+  wss.broadcast(JSON.stringify(newObj));
+};
