@@ -9,7 +9,8 @@ class App extends Component {
       type: '',
       currentUser: 'Anonymous',
       oldUser: 'Anonymous',
-      messagesNotifications: []
+      messagesNotifications: [],
+      countUsers: []
     };
     this.addMessage = this.addMessage.bind(this);
     this.addNotification = this.addNotification.bind(this);
@@ -22,7 +23,7 @@ class App extends Component {
         JSON.stringify({
           type: 'postMessage',
           username: this.state.currentUser,
-          content: event.target.value,
+          content: event.target.value
         })
       );
       event.target.value = '';
@@ -62,16 +63,36 @@ class App extends Component {
     this.socket.onmessage = event => {
       const messagesNotifications = this.state.messagesNotifications;
       const data = JSON.parse(event.data);
+      switch (data.type) {
+        case 'incomingMessage':
           this.setState(
             {
-              messagesNotifications: [
-                ...messagesNotifications,
-                data
-              ],
+              messagesNotifications: [...messagesNotifications, data],
               type: data.type
             },
             () => {}
           );
+          break;
+        case 'incomingNotification':
+          this.setState(
+            {
+              messagesNotifications: [...messagesNotifications, data],
+              type: data.type
+            },
+            () => {}
+          );
+          break;
+        case 'usersConnected':
+          this.setState(
+            {
+              countUsers: data
+            },
+            () => {}
+          );
+          break;
+        default:
+          throw new Error('Unknown event type ' + data.type);
+      }
     };
   }
 
@@ -82,6 +103,9 @@ class App extends Component {
           <a href="/" className="navbar-brand">
             Chatty
           </a>
+          <div key={this.state.countUsers.id} className="navbar-users">
+            {this.state.countUsers.counter} users online
+          </div>
         </nav>
         <MessageList
           messagesNotifications={this.state.messagesNotifications}
