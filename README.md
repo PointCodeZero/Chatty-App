@@ -1,45 +1,47 @@
-React Boilerplate
-=====================
+# Chat App Project
 
-A minimal and light dev environment for ReactJS.
+Chat App is an open space where users can meet together and chat anonymously or not.
 
-### Usage
+A single-page application built with front-end engines such as ReactJS, native WebSocket, HTML5 & CSS, JavaScript, JSX, Webpack & Babel and back-end engines like NodeJS and Express. Unique id's were generated with UUID package.
 
-Clone the boilerplate and create your own git repo.
+## Functionality
 
-```
-git clone git@github.com:lighthouse-labs/react-simple-boilerplate.git
-cd react-simple-boilerplate
-git remote rm origin
-git remote add origin [YOUR NEW REPOSITORY]
-# Manually update your package.json file
-```
+- Users will be able to join a chat and start typing messages to each other
+- Messages will be displayed in chronological order to everyone participating the chat
+- Time messages were creates are displayed beside eache message
+- Users that join the chat later will only have access to the messages history from this point foward
+- By default when a user joins the chat he will be displayed as Anonymously
+- Users can change their name at any time and all users will be notified
+- The number os users online will be displayed in the far upper rigth corner of the screen and updated automatically
 
-Install the dependencies and start the server.
+## Images
 
-```
-npm install
-npm start
-open http://localhost:3000
-```
+!["Screenshot of chat"](https://github.com/PointCodeZero/Chatty-App/blob/master/docs/chat.jpg?raw=true)
 
-### Static Files
+## Dependencies
 
-You can store static files like images, fonts, etc in the `build` folder.
+- ReactJS
+- ReactDOM
+- Native WebSocket
+- Node.js
+- Express
+- uuid
+- ws
+- Webpack
+- [babel-loader](https://github.com/babel/babel-loader)
+- [webpack-dev-server](https://github.com/webpack/webpack-dev-server)
 
-For example, if you copy a file called my_image.png into the build folder you can access it using `http://localhost:3000/build/my_image.png`.
+## Getting Started
 
-### Linting
+1. Install all dependencies (run `npm install` command)
+2. Run the Client server `./server.js` using the `npm start` command
+3. Run the WebSocket server `./chatty_server/server.js` using the `node server.js` command
 
-This boilerplate project includes React ESLint configuration.
+### Expected Usage
 
-```
-npm run lint
-```
+This program should be executed from the browser, in the following manner:
 
-### Dependencies
-
-* React
-* Webpack
-* [babel-loader](https://github.com/babel/babel-loader)
-* [webpack-dev-server](https://github.com/webpack/webpack-dev-server)
+1. Go to your browser address bar and open `http://localhost/3000/`
+2. Type a message and hit `Enter`
+3. Type a new name and hit `Enter`
+4. Open a new window browser and reapeat steps 2 and 3
