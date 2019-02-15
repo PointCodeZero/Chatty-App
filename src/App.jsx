@@ -8,9 +8,11 @@ class App extends Component {
     this.state = {
       type: '',
       currentUser: 'Anonymous',
-      messages: []
+      oldUser: 'Anonymous',
+      messagesNotifications: []
     };
     this.addMessage = this.addMessage.bind(this);
+    this.addNotification = this.addNotification.bind(this);
     this.currentUserUpdate = this.currentUserUpdate.bind(this);
   }
 
@@ -18,12 +20,26 @@ class App extends Component {
     if (event.key == 'Enter') {
       this.socket.send(
         JSON.stringify({
-          type: 'postMessages',
+          type: 'postMessage',
           username: this.state.currentUser,
-          content: event.target.value
+          content: event.target.value,
         })
       );
       event.target.value = '';
+    }
+  }
+
+  addNotification(event) {
+    if (event.key == 'Enter') {
+      const oldUser = this.state.oldUser;
+      const newUser = event.target.value;
+      this.socket.send(
+        JSON.stringify({
+          type: 'postNotification',
+          content: `${oldUser} has changed their name to ${newUser}`
+        })
+      );
+      this.setState({ oldUser: newUser });
     }
   }
 
@@ -44,26 +60,18 @@ class App extends Component {
     };
 
     this.socket.onmessage = event => {
-      const messages = this.state.messages;
+      const messagesNotifications = this.state.messagesNotifications;
       const data = JSON.parse(event.data);
-      switch (data.type) {
-        case 'incomingMessage':
           this.setState(
             {
-              messages: [
-                ...messages,
-                { id: data.id, username: data.username, content: data.content }
-              ]
+              messagesNotifications: [
+                ...messagesNotifications,
+                data
+              ],
+              type: data.type
             },
             () => {}
           );
-          break;
-        // case 'incomingNotification':
-        //   // this.setState({ messages: [...messages, data] }, () => { });
-        //   break;
-        default:
-          throw new Error(`Unknown event type ${data.type}`);
-      }
     };
   }
 
@@ -76,11 +84,12 @@ class App extends Component {
           </a>
         </nav>
         <MessageList
-          messages={this.state.messages}
+          messagesNotifications={this.state.messagesNotifications}
           currentUser={this.state.currentUser}
         />
         <ChatBar
           addMessage={this.addMessage}
+          addNotification={this.addNotification}
           currentUser={this.state.currentUser}
           currentUserUpdate={this.currentUserUpdate}
         />
@@ -88,4 +97,5 @@ class App extends Component {
     );
   }
 }
+
 export default App;
